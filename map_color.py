@@ -11,11 +11,24 @@ from typing import List, Dict
 # returns false if not possible, returns the set of new restrictions if possible
 def addColor(R: List[List[int]], province: str, color: int) -> List[List[str]]:
     """
-    :param R: A list of restriction tuples
-    :param province: The province we are adding a color to
-    :param color: A color integer
-    :return: A new list of restriction tuples, or False if there are collisions
+    Add a color to the province if there are no color collisions  
+
+    Args:  
+        R (List[List[int]]): A list of restriction tuples  
+        province (str): The province we are adding a color to  
+        color (int): A color integer  
+
+    Returns:
+        List[List[str]]: A new list of restriction tuples, or False if there are collisions
     """
+    # Add a color to the province  
+
+    # :param R: A list of restriction tuples  
+    # :param province: The province we are adding a color to  
+    # :param color: A color integer  
+    
+    # :return: A new list of restriction tuples, or False if there are collisions
+
     ans = []
     for rr in R: 
         ## rr is a list [province1, province2]
@@ -30,14 +43,18 @@ def addColor(R: List[List[int]], province: str, color: int) -> List[List[str]]:
 
 # checks if the restrition rr allows the given province to have the given color
 # returns false if not possible, otherwise returns the new restriction
-def checkRestriction(rr: List[str], province: str, color: int):
+def checkRestriction(rr: List[str], province: str, color: int) -> List[str]:
     """
-    :param rr: One restriction tuple [province1, province2]
-    :param province: The province we are adding a color to
-    :param color: A color integer
-    :return: A new restriction tuple, or False if there is a collision
+    Check if a restriction tuple has a collision
+
+    Args:  
+        rr (List[str]): A restriction truple [province1, province2]  
+        province (str): The province we are adding a color to  
+        color (int): The color integer  
+
+    Returns:
+        List[str]: A new restriction tuple, or False if there is a collision
     """
-    # finding the index of the province (saved to index)
     index = -1
     other = -1
     if rr[0] == province:
@@ -64,13 +81,19 @@ def checkRestriction(rr: List[str], province: str, color: int):
 # if coloring is possible returns the province-> color map, otherwise False
 # for 3 colors outputs should be like {'ab': 1, 'bc': 2, 'mb': 1, 'nb': 1, 'ns': 2, 'nl': 1, 'nt': 3, 'nu': 2, 'on': 2, 'pe': 3, 'qc': 3, 'sk': 2, 'yt': 1}
 def solveCSP(provinces: List[str], numColors: int, R: List[List[str]], colorDict: Dict[str, int]):
-    """
-    :param provinces: A list of provinces
-    :param numColors: The number of colors we can use to color the provinces
-    :param R: The pre-calculated list of restriction tuples
-    :param colorMap: The color dictionary being built in each recursive call
-    :return: A fully built color map
-    """
+    """ 
+    Assign colors onto provinces such that no two adjacent provinces have the same color.
+    Uses backtracking.
+
+    Args:  
+        provinces (List[str]): A list of provinces  
+        numColors (int): The number of colors to use  
+        R (List[List[str]]): A list of restriction tuples  
+        colorDict (Dict[str, int]): The color disctionary passed in each recursive call  
+
+    Returns:
+        [type]: A fully built color map, or False if not solvable
+    """    
     # Check if color assignment is complete
     if None not in colorDict.values():
         return colorDict
@@ -81,16 +104,16 @@ def solveCSP(provinces: List[str], numColors: int, R: List[List[str]], colorDict
             colorDict[prov] = None # Not explored yet, add it to the dictionary
         if colorDict[prov] == None: # Find an unassigned province
             province = prov
-            continue # Go to the next loop
 
+    # Try one color at a time
     for c in range(1, numColors+1):
         newR = addColor(R, province, c)
-        if not newR is False: # No color collision, you're good.
+        if not newR is False: # No color collision, you're good
             colorDict[province] = c
             result = solveCSP(provinces, numColors, newR, colorDict)
             if not result is False:
                 return result
-    colorDict[province] = None # If you hit this, backtrack by setting the (k,v) as None
+        colorDict[province] = None # If you hit this, backtrack by setting the (k,v) as None
     return False
 
 # main program starts
